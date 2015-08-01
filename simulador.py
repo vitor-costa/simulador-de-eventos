@@ -112,13 +112,13 @@ def trata_evento(evento):
 	global tempo
 	tempo += evento[1]
 	if evento[0] == 1:
-		f.write("{0},{1}\n".format("chegada", evento[1]))
+		f.write("{0},{1},{2}\n".format("chegada", evento[1], elementos_na_fila))
 		trata_chegada()
 	if evento[0] == 2:
-		f.write("{0},{1}\n".format("saida", evento[1]))
+		f.write("{0},{1},{2}\n".format("saida", evento[1], elementos_na_fila))
 		trata_saida()
 	if evento[0] == 3:
-		f.write("{0},{1}\n".format("reentrada", evento[1]))
+		f.write("{0},{1},{2}\n".format("reentrada", evento[1], elementos_na_fila))
 		trata_reentrada()
 
 def trata_chegada():
