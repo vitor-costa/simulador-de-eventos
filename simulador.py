@@ -55,25 +55,41 @@ def rodar_simulador():
 # 	return [evento, amostra]
 
 def gerar_evento():
-	soma_taxas = 1
+	# soma_taxas = 1
 	# considerando variáveis aleatórias com distribuição exponencial
-	prob_chegada = taxa_chegada / float(soma_taxas)
-	prob_saida = taxa_saida / float(soma_taxas)
-	prob_reentrada = taxa_reentrada / float(soma_taxas)
-	u = random()
-	if u < prob_chegada:
-		# gera chegada
-		amostra = gera_amostra_chegada(taxa_chegada)
-		evento = 1
-	elif u < prob_chegada + prob_saida:
-		# gera saida
-		amostra = gera_amostra(taxa_saida)
-		evento = 2
+	# prob_chegada = taxa_chegada / float(soma_taxas)
+	# prob_saida = taxa_saida / float(soma_taxas)
+	# prob_reentrada = taxa_reentrada / float(soma_taxas)
+	global servidor_ocupado
+
+	amostra_chegada = gera_amostra_chegada(taxa_chegada) if taxa_chegada != 0 else 0
+	amostra_saida = gera_amostra(taxa_saida) if taxa_saida != 0 else 0
+	amostra_reentrada = gera_amostra(taxa_reentrada) if taxa_reentrada != 0 else 0
+
+	if not servidor_ocupado:
+		# se o servidor estiver vazio, o único evento possível é uma chegada
+		return [1, amostra_chegada]
 	else:
-		# gera reentrada
-		amostra = gera_amostra(taxa_reentrada)
-		evento = 3
-	return [evento, amostra]
+		proximo_evento = [1, amostra_chegada]
+		for m in [[2, amostra_saida], [3, amostra_reentrada]]:
+			if m[1] < proximo_evento[1] and m[1] != 0:
+				proximo_evento = m
+
+	return proximo_evento
+	# u = random()
+	# if u < prob_chegada:
+	# 	# gera chegada
+	# 	amostra = gera_amostra_chegada(taxa_chegada)
+	# 	evento = 1
+	# elif u < prob_chegada + prob_saida:
+	# 	# gera saida
+	# 	amostra = gera_amostra(taxa_saida)
+	# 	evento = 2
+	# else:
+	# 	# gera reentrada
+	# 	amostra = gera_amostra(taxa_reentrada)
+	# 	evento = 3
+	# return [evento, amostra]
 
 def gera_amostra_chegada(taxa):
 	# gerador de amostras com distribuição exponencial
